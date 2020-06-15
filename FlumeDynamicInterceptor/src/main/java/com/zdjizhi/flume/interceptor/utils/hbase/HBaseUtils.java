@@ -24,7 +24,7 @@ import java.util.TimerTask;
 
 public class HBaseUtils {
     private final static Logger logger = Logger.getLogger(HBaseUtils.class);
-    private static Map<String, String> subIdMap = new HashMap<>(333334);
+    private static Map<String, String> subIdMap = new HashMap<>(128);
     private static Connection connection;
     private static Long time;
 

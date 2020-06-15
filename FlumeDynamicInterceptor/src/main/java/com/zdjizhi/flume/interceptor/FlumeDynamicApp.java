@@ -61,9 +61,10 @@ public class FlumeDynamicApp implements Interceptor {
                 /**
                  * v1.0.3-com.zdjizhi.galaxy
                  */
-                .loadDataFile(ipDatPath + "all_ip_info_v4.mmdb")
-                .loadDataFilePrivateV4(ipDatPath + "ip_private.mmdb")
-                .loadDataFilePrivateV6(ipDatPath + "ip_private.mmdb")
+                .loadDataFileV4(ipDatPath + "ip_v4.mmdb")
+                .loadDataFileV6(ipDatPath + "ip_v6.mmdb")
+                .loadDataFilePrivateV4(ipDatPath + "ip_private_v4.mmdb")
+                .loadDataFilePrivateV6(ipDatPath + "ip_private_v6.mmdb")
                 .loadAsnDataFile(ipDatPath + "asn_v4.mmdb")
                 .loadAsnDataFileV6(ipDatPath + "asn_v6.mmdb")
                 .build();
