@@ -1,6 +1,7 @@
 package com.zdjizhi.flume.interceptor.utils.http;
 
-import com.alibaba.fastjson.JSON;
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -13,50 +14,62 @@ import java.io.InputStreamReader;
 
 /**
  * 获取网关schema工具类
+ * @author qidaijie
  */
 public class HttpClientUtil {
-    public static String requestByGetMethod(String s) {
+    private static final Log logger = LogFactory.get();
+
+    /**
+     * 请求网关获取schema
+     *
+     * @param http 网关url
+     * @return schema
+     */
+    public static String requestByGetMethod(String http) {
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        StringBuilder entityStringBuilder = null;
+        StringBuilder entityStringBuilder;
+
+        HttpGet get = new HttpGet(http);
+        BufferedReader bufferedReader = null;
+        CloseableHttpResponse httpResponse = null;
         try {
-            HttpGet get = new HttpGet(s);
-            CloseableHttpResponse httpResponse = null;
             httpResponse = httpClient.execute(get);
-            try {
-                HttpEntity entity = httpResponse.getEntity();
-                entityStringBuilder = new StringBuilder();
-                if (null != entity) {
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(), "UTF-8"), 8 * 1024);
-                    String line = null;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        entityStringBuilder.append(line);
+            HttpEntity entity = httpResponse.getEntity();
+            entityStringBuilder = new StringBuilder();
+            if (null != entity) {
+                bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(), "UTF-8"), 8 * 1024);
+                int intC;
+                while ((intC = bufferedReader.read()) != -1) {
+                    char c = (char) intC;
+                    if (c == '\n') {
+                        break;
                     }
+                    entityStringBuilder.append(c);
                 }
-            } finally {
-                httpResponse.close();
+
+                return entityStringBuilder.toString();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            logger.error("Get Schema from Query engine ERROR! Exception message is:" + e);
         } finally {
-            try {
-                if (httpClient != null) {
+            if (httpClient != null) {
+                try {
                     httpClient.close();
+                } catch (IOException e) {
+                    logger.error("Close HTTP Client ERROR! Exception messgae is:" + e);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            }
+            if (httpResponse != null) {
+                try {
+                    httpResponse.close();
+                } catch (IOException e) {
+                    logger.error("Close httpResponse ERROR! Exception messgae is:" + e);
+                }
+            }
+            if (bufferedReader != null) {
+                org.apache.commons.io.IOUtils.closeQuietly(bufferedReader);
             }
         }
-        return entityStringBuilder.toString();
+        return "";
     }
-
-
-//    public static void main(String[] args) {
-////        String s = HttpClientUtil.requestByGetMethod("http://192.168.40.224:9999/metadata/schema/v1/fields/security_event_log");
-////        System.out.println(s);
-////        String schemaHttpRes = HttpClientUtil.requestByGetMethod("http://192.168.40.224:9999/metadata/schema/v1/fields/security_event_log");
-////        String schemaHttpRes = HttpClientUtil.requestByGetMethod("http://192.168.40.151:9999/metadata/schema/v1/fields/security_event_log");
-//        String schemaHttpRes = HttpClientUtil.requestByGetMethod("http://192.168.40.224:9999/metadata/schema/v1/fields/connection_record_log");
-//        String data = JSON.parseObject(schemaHttpRes).get("data").toString();
-//        System.out.println(data);
-//    }
 }

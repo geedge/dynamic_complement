@@ -25,6 +25,7 @@ public class FlumeOnOffApp implements Interceptor {
     @Override
     public void initialize() {
 
+
     }
 
     @Override

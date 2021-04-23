@@ -19,13 +19,14 @@ public class OnOffConfig {
     public static final int STOP_BILLING = 2;
 
     /**
-     * 计费请求报文类型
-     */
-    public static final String RADIUS_ACCT_STATUS_TYPE = "radius_acct_status_type";
-    /**
      * 报文类型
      */
     public static final String RADIUS_PACKET_TYPE = "radius_packet_type";
+
+    /**
+     * 计费请求报文类型
+     */
+    public static final String RADIUS_ACCT_STATUS_TYPE = "radius_acct_status_type";
 
     /**
      * 发送计费请求报文时间戳

@@ -7,6 +7,11 @@ import com.zdjizhi.flume.interceptor.utils.system.FlowWriteConfigurations;
  * @author Administrator
  */
 public class FlowWriteConfig {
+    public static final String VISIBILITY = "disabled";
+    public static final int IF_PARAM_LENGTH = 3;
+    public static final String FORMAT_SPLITTER = ",";
+    public static final String IS_JSON_KEY_TAG = "$.";
+    public static final String IF_CONDITION_SPLITTER = "=";
 
 //    public static final String SEGMENTATION = ",";
 

@@ -5,25 +5,16 @@
     <parent>
         <artifactId>dynamic_complement</artifactId>
         <groupId>com.zdjizhi</groupId>
-        <version>1.0</version>
+        <version>v3.21.04.23</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>FlumeSubscriberInterceptor</artifactId>
 
-    <repositories>
-
-        <repository>
-            <id>ebi</id>
-            <name>www.ebi.ac.uk</name>
-            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public/</url>
-        </repository>
-    </repositories>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <flume.version>1.9.0</flume.version>
-        <hbase.version>2.2.1</hbase.version>
+        <hbase.version>2.2.3</hbase.version>
     </properties>
 
     <build>
@@ -33,11 +24,11 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.4.1</version>
                 <configuration>
-                    <createDependencyReducedPom>true</createDependencyReducedPom>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
@@ -62,6 +53,21 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>io.github.zlika</groupId>
+                <artifactId>reproducible-build-maven-plugin</artifactId>
+                <version>0.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>strip-jar</goal>
+                        </goals>
+                        <phase>install</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -115,7 +121,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.47</version>
+            <version>1.2.70</version>
         </dependency>
 
         <dependency>
@@ -141,21 +147,6 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase-server</artifactId>
-            <version>${hbase.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-log4j12</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-over-slf4j</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
     </dependencies>
 

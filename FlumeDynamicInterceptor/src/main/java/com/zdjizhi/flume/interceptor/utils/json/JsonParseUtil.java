@@ -3,6 +3,8 @@ package com.zdjizhi.flume.interceptor.utils.json;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jayway.jsonpath.JsonPath;
+import com.zdjizhi.flume.interceptor.common.FlowWriteConfig;
 import com.zdjizhi.flume.interceptor.utils.http.HttpClientUtil;
 import net.sf.cglib.beans.BeanGenerator;
 import net.sf.cglib.beans.BeanMap;
@@ -118,16 +120,38 @@ public class JsonParseUtil {
         JSONArray fields = (JSONArray) schemaJson.get("fields");
 
         for (Object field : fields) {
-            String name = JSON.parseObject(field.toString()).get("name").toString();
-            String type = JSON.parseObject(field.toString()).get("type").toString();
-            map.put(name, getClassName(type));
-
+            String filedStr = field.toString();
+            if (checkKeepField(filedStr)) {
+                String name = JsonPath.read(filedStr, "$.name").toString();
+                String type = JsonPath.read(filedStr, "$.type").toString();
+                //组合用来生成实体类的map
+                map.put(name, getClassName(type));
+            }
         }
-
-
         return map;
     }
 
+
+    /**
+     * 判断字段是否需要保留
+     *
+     * @param message 单个field-json
+     * @return true or false
+     */
+    private static boolean checkKeepField(String message) {
+        boolean isKeepField = true;
+        boolean isHiveDoc = JSON.parseObject(message).containsKey("doc");
+        if (isHiveDoc) {
+            boolean isHiveVi = JsonPath.read(message, "$.doc").toString().contains("visibility");
+            if (isHiveVi) {
+                String visibility = JsonPath.read(message, "$.doc.visibility").toString();
+                if (FlowWriteConfig.VISIBILITY.equals(visibility)) {
+                    isKeepField = false;
+                }
+            }
+        }
+        return isKeepField;
+    }
 
     /**
      * 根据http链接获取schema，解析之后返回一个任务列表 (useList toList funcList)
