@@ -181,8 +181,8 @@ public class FlumeDynamicApp implements Interceptor {
                         }
                         break;
                     case "app_match":
-                        if ((int) name != 0 && appendTo == null) {
-                            JsonParseUtil.setValue(object, appendToKeyName, appMatch(appIdHttpUrl, Integer.parseInt(name.toString())));
+                        if (name != null && appendTo == null) {
+                            JsonParseUtil.setValue(object, appendToKeyName, appMatch(appIdHttpUrl, name.toString()));
                         }
                         break;
                     case "geo_ip_country":
@@ -280,11 +280,12 @@ public class FlumeDynamicApp implements Interceptor {
     /**
      * appId与缓存中对应关系补全appName
      *
-     * @param appId id
+     * @param appIds id
      * @return appName
      */
-    private static String appMatch(String appIdHttpUrl, int appId) {
-        String appName = AppUtils.getAppName(appIdHttpUrl, appId);
+    private static String appMatch(String appIdHttpUrl, String appIds) {
+        String appId = appIds.split(FlowWriteConfig.FORMAT_SPLITTER)[0];
+        String appName = AppUtils.getAppName(appIdHttpUrl, Integer.parseInt(appId));
         if (StringUtil.isBlank(appName)) {
             logger.warn("AppMap get appName is null, ID is :{}", appId);
         }

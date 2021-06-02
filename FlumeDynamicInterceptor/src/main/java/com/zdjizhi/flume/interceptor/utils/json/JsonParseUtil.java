@@ -36,6 +36,9 @@ public class JsonParseUtil {
             case "long":
                 clazz = long.class;
                 break;
+            case "array":
+                clazz = JSONArray.class;
+                break;
             case "Integer":
                 clazz = Integer.class;
                 break;
